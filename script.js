@@ -5,8 +5,9 @@ const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
 const controlButtons = document.querySelectorAll('.control');
 
-const gridSize = 16;
-const tileCount = canvas.width / gridSize;
+const gridSize = 4;
+const cols = canvas.width / gridSize;
+const rows = canvas.height / gridSize;
 const speed = 165;
 
 let snake;
@@ -20,8 +21,8 @@ let gameOver;
 function randomFoodPosition() {
   while (true) {
     const candidate = {
-      x: Math.floor(Math.random() * tileCount),
-      y: Math.floor(Math.random() * tileCount),
+      x: Math.floor(Math.random() * cols),
+      y: Math.floor(Math.random() * rows),
     };
 
     if (!snake.some(segment => segment.x === candidate.x && segment.y === candidate.y)) {
@@ -32,10 +33,10 @@ function randomFoodPosition() {
 
 function resetGame() {
   snake = [
-    { x: 10, y: 10 },
-    { x: 9, y: 10 },
-    { x: 8, y: 10 },
-    { x: 7, y: 10 },
+    { x: 9, y: 5 },
+    { x: 8, y: 5 },
+    { x: 7, y: 5 },
+    { x: 6, y: 5 },
   ];
   direction = { x: 1, y: 0 };
   nextDirection = { ...direction };
@@ -49,7 +50,7 @@ function resetGame() {
   draw();
 }
 
-function drawTile(x, y, color, radius = 2) {
+function drawTile(x, y, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
 }
@@ -57,16 +58,13 @@ function drawTile(x, y, color, radius = 2) {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  for (let i = 0; i < tileCount; i++) {
-    for (let j = 0; j < tileCount; j++) {
-      drawTile(i, j, (i + j) % 2 === 0 ? '#b8c7a0' : '#b8c7a0', 0);
-    }
-  }
+  ctx.fillStyle = '#a9b88f';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  drawTile(food.x, food.y, '#1f2b16', 0);
+  drawTile(food.x, food.y, '#1e2a15');
 
-  snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#1f2b16' : '#1f2b16', 0);
+  snake.forEach(segment => {
+    drawTile(segment.x, segment.y, '#1e2a15');
   });
 }
 
@@ -86,14 +84,12 @@ function tick() {
 
   direction = nextDirection;
   const head = {
-    x: snake[0].x + direction.x,
-    y: snake[0].y + direction.y,
+    x: (snake[0].x + direction.x + cols) % cols,
+    y: (snake[0].y + direction.y + rows) % rows,
   };
 
-  const hitWall = head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount;
   const hitSelf = snake.some(segment => segment.x === head.x && segment.y === head.y);
-
-  if (hitWall || hitSelf) {
+  if (hitSelf) {
     endGame();
     return;
   }
@@ -127,7 +123,6 @@ window.addEventListener('keydown', event => {
 
   const move = moves[key];
   if (!move) return;
-
   setDirection(move);
 });
 
@@ -158,7 +153,7 @@ canvas.addEventListener('touchend', event => {
   const dx = touch.clientX - touchStartX;
   const dy = touch.clientY - touchStartY;
 
-  if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+  if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
 
   if (Math.abs(dx) > Math.abs(dy)) {
     setDirection(dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 });
