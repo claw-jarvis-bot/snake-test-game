@@ -7,54 +7,27 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="phone-shell">
-    <div class="phone-highlight"></div>
-    <header class="phone-top">
-      <div class="brand">NOKIA</div>
-      <div class="earpiece"></div>
-    </header>
+  <main class="phone-photo-layout">
+    <div class="phone-photo-frame">
+      <img class="phone-photo" src="assets/nokia-reference.jpg" alt="Reference phone shell" />
 
-    <section class="screen-cradle">
-      <div class="screen-bezel">
-        <div class="screen-meta">
+      <section class="screen-overlay" aria-label="Snake screen">
+        <div class="screen-meta-ui">
           <span>SNAKE</span>
-          <span>SCORE <strong id="score">0</strong></span>
+          <span><strong id="score">0</strong></span>
         </div>
         <canvas id="game" width="84" height="48" aria-label="Snake game board"></canvas>
         <p id="message">READY</p>
-      </div>
-    </section>
+      </section>
 
-    <section class="action-row">
-      <button class="soft-side left control" data-dir="left"><span>C</span></button>
-      <button id="restart" class="softkey control-start">START</button>
-      <button class="soft-side right control" data-dir="right"><span>↩</span></button>
-    </section>
+      <button id="restart" class="hotspot start-hotspot" aria-label="Start"></button>
+      <button class="hotspot up-hotspot control" data-dir="up" aria-label="Up"></button>
+      <button class="hotspot left-hotspot control" data-dir="left" aria-label="Left"></button>
+      <button class="hotspot right-hotspot control" data-dir="right" aria-label="Right"></button>
+      <button class="hotspot down-hotspot control" data-dir="down" aria-label="Down"></button>
+    </div>
 
-    <section class="nav-pad" aria-label="Mobile controls">
-      <button class="nav-button nav-up control" data-dir="up"><span>▲</span></button>
-      <div class="nav-middle">
-        <button class="nav-button nav-left control" data-dir="left"><span>◀</span></button>
-        <button class="nav-button nav-center control" data-dir="down"><span>OK</span></button>
-        <button class="nav-button nav-right control" data-dir="right"><span>▶</span></button>
-      </div>
-      <button class="nav-button nav-down control" data-dir="down"><span>▼</span></button>
-    </section>
-
-    <section class="keypad" aria-hidden="true">
-      <button class="key"><span class="keycap"><b>1</b></span></button>
-      <button class="key"><span class="keycap"><b>2</b><small>ABC</small></span></button>
-      <button class="key"><span class="keycap"><b>3</b><small>DEF</small></span></button>
-      <button class="key"><span class="keycap"><b>4</b><small>GHI</small></span></button>
-      <button class="key"><span class="keycap"><b>5</b><small>JKL</small></span></button>
-      <button class="key"><span class="keycap"><b>6</b><small>MNO</small></span></button>
-      <button class="key"><span class="keycap"><b>7</b><small>PQRS</small></span></button>
-      <button class="key"><span class="keycap"><b>8</b><small>TUV</small></span></button>
-      <button class="key"><span class="keycap"><b>9</b><small>WXYZ</small></span></button>
-      <button class="key"><span class="keycap"><b>*</b></span></button>
-      <button class="key"><span class="keycap"><b>0</b><small>+</small></span></button>
-      <button class="key"><span class="keycap"><b>#</b></span></button>
-    </section>
+    <p class="hint">Swipe on the screen or tap the phone controls.</p>
   </main>
   <script src="script.js"></script>
 </body>
