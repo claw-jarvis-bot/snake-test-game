@@ -15,6 +15,14 @@
       <button id="restart">Restart</button>
     </div>
     <canvas id="game" width="400" height="400" aria-label="Snake game board"></canvas>
+    <div class="controls" aria-label="Mobile controls">
+      <button class="control up" data-dir="up">▲</button>
+      <div class="controls-row">
+        <button class="control" data-dir="left">◀</button>
+        <button class="control" data-dir="down">▼</button>
+        <button class="control" data-dir="right">▶</button>
+      </div>
+    </div>
     <p id="message">Eat the food to grow. Avoid the walls and yourself.</p>
   </main>
   <script src="script.js"></script>

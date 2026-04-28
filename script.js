@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
+const controlButtons = document.querySelectorAll('.control');
 
 const gridSize = 20;
 const tileCount = canvas.width / gridSize;
@@ -76,6 +77,11 @@ function endGame() {
   messageEl.textContent = `Game over. Final score: ${score}. Press restart to play again.`;
 }
 
+function setDirection(move) {
+  if (move.x === -direction.x && move.y === -direction.y) return;
+  nextDirection = move;
+}
+
 function tick() {
   if (gameOver) return;
 
@@ -123,9 +129,44 @@ window.addEventListener('keydown', event => {
   const move = moves[key];
   if (!move) return;
 
-  if (move.x === -direction.x && move.y === -direction.y) return;
-  nextDirection = move;
+  setDirection(move);
 });
+
+controlButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const dir = button.dataset.dir;
+    const moves = {
+      up: { x: 0, y: -1 },
+      down: { x: 0, y: 1 },
+      left: { x: -1, y: 0 },
+      right: { x: 1, y: 0 },
+    };
+    setDirection(moves[dir]);
+  });
+});
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener('touchstart', event => {
+  const touch = event.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+}, { passive: true });
+
+canvas.addEventListener('touchend', event => {
+  const touch = event.changedTouches[0];
+  const dx = touch.clientX - touchStartX;
+  const dy = touch.clientY - touchStartY;
+
+  if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    setDirection(dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 });
+  } else {
+    setDirection(dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 });
+  }
+}, { passive: true });
 
 restartBtn.addEventListener('click', resetGame);
 resetGame();
