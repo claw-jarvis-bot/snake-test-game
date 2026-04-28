@@ -5,9 +5,9 @@ const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
 const controlButtons = document.querySelectorAll('.control');
 
-const gridSize = 20;
+const gridSize = 16;
 const tileCount = canvas.width / gridSize;
-const speed = 120;
+const speed = 135;
 
 let snake;
 let direction;
@@ -42,7 +42,7 @@ function resetGame() {
   score = 0;
   gameOver = false;
   scoreEl.textContent = score;
-  messageEl.textContent = 'Eat the food to grow. Avoid the walls and yourself.';
+  messageEl.textContent = 'Ready';
   clearInterval(loopId);
   loopId = setInterval(tick, speed);
   draw();
@@ -62,21 +62,21 @@ function draw() {
 
   for (let i = 0; i < tileCount; i++) {
     for (let j = 0; j < tileCount; j++) {
-      drawTile(i, j, (i + j) % 2 === 0 ? '#b7c98a' : '#a5ba79', 0);
+      drawTile(i, j, (i + j) % 2 === 0 ? '#b7c79c' : '#a8b98d', 0);
     }
   }
 
-  drawTile(food.x, food.y, '#4a2c16', 1);
+  drawTile(food.x, food.y, '#23361a', 1);
 
   snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#24361a' : '#365027');
+    drawTile(segment.x, segment.y, index === 0 ? '#17240f' : '#263a19');
   });
 }
 
 function endGame() {
   gameOver = true;
   clearInterval(loopId);
-  messageEl.textContent = `Game over. Final score: ${score}. Press restart to play again.`;
+  messageEl.textContent = `Game over ${score}`;
 }
 
 function setDirection(move) {
@@ -107,7 +107,7 @@ function tick() {
     score += 1;
     scoreEl.textContent = score;
     food = randomFoodPosition();
-    messageEl.textContent = 'Nice. Keep going.';
+    messageEl.textContent = 'Good';
   } else {
     snake.pop();
   }
