@@ -48,11 +48,13 @@ function resetGame() {
   draw();
 }
 
-function drawTile(x, y, color, radius = 4) {
+function drawTile(x, y, color, radius = 2) {
   ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.roundRect(x * gridSize + 1, y * gridSize + 1, gridSize - 2, gridSize - 2, radius);
-  ctx.fill();
+  ctx.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize - 2, gridSize - 2);
+  if (radius > 0) {
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
+    ctx.strokeRect(x * gridSize + 1.5, y * gridSize + 1.5, gridSize - 3, gridSize - 3);
+  }
 }
 
 function draw() {
@@ -60,14 +62,14 @@ function draw() {
 
   for (let i = 0; i < tileCount; i++) {
     for (let j = 0; j < tileCount; j++) {
-      drawTile(i, j, (i + j) % 2 === 0 ? '#0f172a' : '#111827', 2);
+      drawTile(i, j, (i + j) % 2 === 0 ? '#a9c88f' : '#9cbb83', 0);
     }
   }
 
-  drawTile(food.x, food.y, '#f43f5e', 999);
+  drawTile(food.x, food.y, '#b14d21', 1);
 
   snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#22c55e' : '#86efac');
+    drawTile(segment.x, segment.y, index === 0 ? '#2f5128' : '#3f6a33');
   });
 }
 
