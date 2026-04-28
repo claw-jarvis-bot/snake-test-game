@@ -1,5 +1,6 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 const scoreEl = document.getElementById('score');
 const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
@@ -57,9 +58,6 @@ function drawTile(x, y, color) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = '#a9b88f';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   drawTile(food.x, food.y, '#1e2a15');
 

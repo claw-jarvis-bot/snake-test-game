@@ -25,7 +25,7 @@ button {
 }
 
 .phone-photo-layout {
-  width: min(92vw, 360px);
+  width: min(92vw, 380px);
 }
 
 .phone-photo-frame {
@@ -37,26 +37,27 @@ button {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 20px;
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
 }
 
 .screen-overlay {
   position: absolute;
   left: 14.2%;
-  top: 7.5%;
-  width: 65.1%;
+  top: 7.8%;
+  width: 65.0%;
   color: #1f2c16;
+  pointer-events: none;
 }
 
 .screen-meta-ui {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.8%;
-  font-size: clamp(7px, 1.9vw, 11px);
+  margin-bottom: 1.4%;
+  font-size: clamp(7px, 1.8vw, 10px);
   font-weight: 700;
   letter-spacing: 0.08em;
+  text-shadow: 0 0 0.2px #1f2c16;
 }
 
 canvas {
@@ -64,19 +65,20 @@ canvas {
   aspect-ratio: 84 / 48;
   display: block;
   border: 0;
-  background: #a8b78d;
+  background: transparent;
   image-rendering: pixelated;
   touch-action: none;
 }
 
 #message {
-  margin: 2% 0 0;
+  margin: 1.5% 0 0;
   min-height: 1em;
   text-align: center;
-  font-size: clamp(6px, 1.6vw, 9px);
+  font-size: clamp(6px, 1.45vw, 8px);
   font-weight: 700;
   letter-spacing: 0.12em;
   color: #1f2c16;
+  text-shadow: 0 0 0.2px #1f2c16;
 }
 
 .hotspot {
@@ -86,15 +88,8 @@ canvas {
   -webkit-tap-highlight-color: transparent;
 }
 
-.start-hotspot { left: 30%; top: 34.7%; width: 40%; height: 4.3%; border-radius: 999px; }
-.up-hotspot    { left: 39%; top: 45.7%; width: 22%; height: 4.4%; border-radius: 999px; }
-.left-hotspot  { left: 24%; top: 51.8%; width: 20%; height: 6.3%; transform: skewX(-13deg); border-radius: 18px; }
-.right-hotspot { left: 56%; top: 51.8%; width: 20%; height: 6.3%; transform: skewX(13deg); border-radius: 18px; }
-.down-hotspot  { left: 39%; top: 60.3%; width: 22%; height: 4.4%; border-radius: 999px; }
-
-.hint {
-  margin: 14px 0 0;
-  text-align: center;
-  color: #cfd8e3;
-  font-size: 0.9rem;
-}
+.start-hotspot { left: 30.5%; top: 34.8%; width: 39%; height: 4.2%; border-radius: 999px; }
+.up-hotspot    { left: 39.5%; top: 45.7%; width: 21%; height: 4.2%; border-radius: 999px; }
+.left-hotspot  { left: 24.7%; top: 51.9%; width: 19.5%; height: 6.0%; transform: skewX(-13deg); border-radius: 18px; }
+.right-hotspot { left: 56.0%; top: 51.9%; width: 19.5%; height: 6.0%; transform: skewX(13deg); border-radius: 18px; }
+.down-hotspot  { left: 39.5%; top: 60.1%; width: 21%; height: 4.2%; border-radius: 999px; }
