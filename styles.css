@@ -1,16 +1,18 @@
 :root {
   color-scheme: light;
   font-family: Arial, Helvetica, sans-serif;
-  --shell-1: #7d95ab;
-  --shell-2: #647c92;
-  --shell-3: #a9bac9;
-  --shell-edge: #4f6478;
-  --screen-bg: #a9b88f;
-  --screen-border: #69755b;
-  --screen-ink: #1f2b16;
-  --key-top: #dfe7ee;
-  --key-bot: #97adbe;
-  --key-edge: #4c6272;
+  --shell-light: #93a9bc;
+  --shell-mid: #738aa0;
+  --shell-dark: #5f7589;
+  --shell-edge: #4c6073;
+  --screen-bg: #a8b78d;
+  --screen-shadow: #8c9d73;
+  --screen-ink: #1f2c16;
+  --bezel: #6f7c60;
+  --key-top: #e4ebf1;
+  --key-mid: #b2c2cf;
+  --key-bot: #8fa4b6;
+  --key-edge: #4b6172;
 }
 
 * { box-sizing: border-box; }
@@ -20,76 +22,79 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 18px;
-  background: radial-gradient(circle at top, #252f39 0%, #121920 55%, #090d11 100%);
+  padding: 20px;
+  background: radial-gradient(circle at top, #26313c 0%, #121920 56%, #090d11 100%);
 }
 
 .phone-shell {
   position: relative;
-  width: min(86vw, 286px);
-  padding: 14px 14px 24px;
-  border-radius: 30px 30px 62px 62px;
+  width: min(86vw, 292px);
+  padding: 16px 14px 22px;
+  border-radius: 34px 34px 64px 64px;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 8%),
-    linear-gradient(180deg, var(--shell-3), var(--shell-1) 32%, var(--shell-2) 74%, #597085 100%);
+    linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 9%),
+    linear-gradient(180deg, var(--shell-light), var(--shell-mid) 32%, var(--shell-dark) 78%, #556b7f 100%);
   border: 2px solid var(--shell-edge);
   box-shadow:
-    0 30px 80px rgba(0,0,0,0.52),
+    0 34px 80px rgba(0,0,0,0.52),
     inset 0 2px 0 rgba(255,255,255,0.3),
-    inset 0 -14px 20px rgba(0,0,0,0.24),
-    inset 8px 0 12px rgba(255,255,255,0.05),
-    inset -8px 0 12px rgba(0,0,0,0.08);
+    inset 0 -14px 22px rgba(0,0,0,0.24),
+    inset 10px 0 14px rgba(255,255,255,0.05),
+    inset -10px 0 14px rgba(0,0,0,0.08);
 }
 
-.antenna-shadow {
+.phone-highlight {
   position: absolute;
-  top: 10px;
-  right: 14px;
+  top: 14px;
+  right: 16px;
   width: 20px;
-  height: 7px;
+  height: 8px;
   border-radius: 0 10px 10px 0;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.12);
 }
 
-.top-cap {
+.phone-top {
   display: grid;
   justify-items: center;
-  gap: 7px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .brand {
-  color: #f1f6fb;
+  color: #f4f8fc;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.16em;
-  font-size: 0.76rem;
-  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+  letter-spacing: 0.22em;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.28);
 }
 
-.speaker {
-  width: 78px;
+.earpiece {
+  width: 82px;
   height: 8px;
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.08);
-  background: repeating-linear-gradient(90deg, #334351 0 5px, #5b6f82 5px 10px);
+  background: repeating-linear-gradient(90deg, #33414d 0 5px, #5f7386 5px 10px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
-.screen-wrap {
-  padding: 9px;
+.screen-cradle {
+  padding: 8px;
   border-radius: 22px 22px 16px 16px;
-  background: linear-gradient(180deg, #869377, #697558);
-  box-shadow: inset 0 2px 5px rgba(255,255,255,0.08), inset 0 -3px 6px rgba(0,0,0,0.18);
+  background: linear-gradient(180deg, #828f74, #667355);
+  box-shadow: inset 0 2px 5px rgba(255,255,255,0.09), inset 0 -3px 6px rgba(0,0,0,0.18);
 }
 
-.screen-glass {
-  background: linear-gradient(180deg, #95a381, #b4c296 18%, #a9b88f 100%);
-  border: 8px solid var(--screen-border);
-  border-radius: 9px;
+.screen-bezel {
+  background: linear-gradient(180deg, #95a381, #b4c295 18%, #a8b78d 100%);
+  border: 8px solid var(--bezel);
+  border-radius: 10px;
   padding: 6px 6px 8px;
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.14), inset 0 -5px 8px rgba(0,0,0,0.08);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.15),
+    inset 0 -5px 8px rgba(0,0,0,0.08);
 }
 
-.screen-header {
+.screen-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,10 +111,11 @@ canvas {
   aspect-ratio: 84 / 48;
   display: block;
   margin: 0 auto;
-  border: 3px solid #647152;
+  border: 3px solid #657252;
   background: var(--screen-bg);
   image-rendering: pixelated;
   touch-action: none;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.08), inset 0 -1px 0 rgba(255,255,255,0.12);
 }
 
 #message {
@@ -122,30 +128,31 @@ canvas {
   text-align: center;
 }
 
-.softkeys {
+.action-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 6px;
-  margin: 10px 0 8px;
+  margin: 10px 0 10px;
 }
 
-.softkey-label {
+.action-label {
+  color: #eef4fa;
   font-size: 8px;
   font-weight: 700;
-  color: #eef4fb;
 }
-.left-label { text-align: left; }
-.right-label { text-align: right; }
+
+.action-label.right {
+  text-align: right;
+}
 
 .softkey {
-  min-width: 84px;
+  min-width: 86px;
   height: 26px;
-  border-radius: 999px;
   border: 2px solid var(--key-edge);
-  background: linear-gradient(180deg, var(--key-top), var(--key-bot));
-  color: #213240;
-  padding: 0 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
+  color: #243241;
   font: inherit;
   font-size: 10px;
   font-weight: 700;
@@ -153,7 +160,7 @@ canvas {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 rgba(0,0,0,0.14);
 }
 
-.nav-cluster {
+.nav-pad {
   display: grid;
   justify-items: center;
   gap: 5px;
@@ -166,13 +173,13 @@ canvas {
   gap: 8px;
 }
 
-.nav-btn {
+.nav-button {
   width: 46px;
   height: 30px;
-  border-radius: 17px;
   border: 2px solid var(--key-edge);
-  background: linear-gradient(180deg, var(--key-top), var(--key-bot));
-  color: #243240;
+  border-radius: 17px;
+  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
+  color: #243241;
   font: inherit;
   font-size: 11px;
   font-weight: 700;
@@ -191,31 +198,32 @@ canvas {
   font-size: 9px;
 }
 
-.keypad-grid {
+.keypad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 7px;
 }
 
-.keypad-grid span {
+.key {
   height: 31px;
-  border-radius: 14px;
   border: 2px solid var(--key-edge);
-  background: linear-gradient(180deg, var(--key-top), var(--key-bot));
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
   color: #223341;
   display: grid;
   place-items: center;
   align-content: center;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.42), 0 2px 0 rgba(0,0,0,0.12);
+  padding: 0;
 }
 
-.keypad-grid b {
+.key b {
   display: block;
   font-size: 10px;
   line-height: 1;
 }
 
-.keypad-grid small {
+.key small {
   display: block;
   font-size: 5px;
   letter-spacing: 0.05em;

@@ -8,45 +8,53 @@
 </head>
 <body>
   <main class="phone-shell">
-    <div class="antenna-shadow"></div>
-    <div class="top-cap">
+    <div class="phone-highlight"></div>
+    <header class="phone-top">
       <div class="brand">NOKIA</div>
-      <div class="speaker"></div>
-    </div>
+      <div class="earpiece"></div>
+    </header>
 
-    <section class="screen-wrap">
-      <div class="screen-glass">
-        <div class="screen-header">
+    <section class="screen-cradle">
+      <div class="screen-bezel">
+        <div class="screen-meta">
           <span>SNAKE</span>
-          <span><strong id="score">0</strong></span>
+          <span>SCORE <strong id="score">0</strong></span>
         </div>
         <canvas id="game" width="84" height="48" aria-label="Snake game board"></canvas>
         <p id="message">READY</p>
       </div>
     </section>
 
-    <div class="softkeys">
-      <span class="softkey-label left-label">Select</span>
-      <button id="restart" class="softkey">START</button>
-      <span class="softkey-label right-label">Back</span>
-    </div>
+    <section class="action-row">
+      <span class="action-label">Select</span>
+      <button id="restart" class="softkey control-start">START</button>
+      <span class="action-label right">Back</span>
+    </section>
 
-    <div class="nav-cluster" aria-label="Mobile controls">
-      <button class="nav-btn nav-up control up" data-dir="up">▲</button>
-      <div class="nav-middle controls-row">
-        <button class="nav-btn control" data-dir="left">◀</button>
-        <button class="nav-btn nav-center control center" data-dir="down">OK</button>
-        <button class="nav-btn control" data-dir="right">▶</button>
+    <section class="nav-pad" aria-label="Mobile controls">
+      <button class="nav-button nav-up control" data-dir="up">▲</button>
+      <div class="nav-middle">
+        <button class="nav-button nav-left control" data-dir="left">◀</button>
+        <button class="nav-button nav-center control" data-dir="down">OK</button>
+        <button class="nav-button nav-right control" data-dir="right">▶</button>
       </div>
-      <button class="nav-btn nav-down control down-wide" data-dir="down">▼</button>
-    </div>
+      <button class="nav-button nav-down control" data-dir="down">▼</button>
+    </section>
 
-    <div class="keypad-grid" aria-hidden="true">
-      <span><b>1</b><small>&nbsp;</small></span><span><b>2</b><small>ABC</small></span><span><b>3</b><small>DEF</small></span>
-      <span><b>4</b><small>GHI</small></span><span><b>5</b><small>JKL</small></span><span><b>6</b><small>MNO</small></span>
-      <span><b>7</b><small>PQRS</small></span><span><b>8</b><small>TUV</small></span><span><b>9</b><small>WXYZ</small></span>
-      <span><b>*</b><small>&nbsp;</small></span><span><b>0</b><small>+</small></span><span><b>#</b><small>&nbsp;</small></span>
-    </div>
+    <section class="keypad" aria-hidden="true">
+      <button class="key"><b>1</b></button>
+      <button class="key"><b>2</b><small>ABC</small></button>
+      <button class="key"><b>3</b><small>DEF</small></button>
+      <button class="key"><b>4</b><small>GHI</small></button>
+      <button class="key"><b>5</b><small>JKL</small></button>
+      <button class="key"><b>6</b><small>MNO</small></button>
+      <button class="key"><b>7</b><small>PQRS</small></button>
+      <button class="key"><b>8</b><small>TUV</small></button>
+      <button class="key"><b>9</b><small>WXYZ</small></button>
+      <button class="key"><b>*</b></button>
+      <button class="key"><b>0</b><small>+</small></button>
+      <button class="key"><b>#</b></button>
+    </section>
   </main>
   <script src="script.js"></script>
 </body>
