@@ -1,16 +1,27 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
+const nextCanvas = document.getElementById('next');
+const nextCtx = nextCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
-const controlButtons = document.querySelectorAll('.control');
 
-const cell = 4;
+ctx.imageSmoothingEnabled = false;
+nextCtx.imageSmoothingEnabled = false;
+
+const cell = 20;
 const boardCols = 10;
-const boardRows = 12;
-const boardWidth = boardCols * cell;
+const boardRows = 20;
 const dropInterval = 550;
+const colors = {
+  I: '#38bdf8',
+  O: '#facc15',
+  T: '#c084fc',
+  L: '#fb923c',
+  J: '#60a5fa',
+  S: '#4ade80',
+  Z: '#f87171',
+};
 const pieces = {
   I: [[1, 1, 1, 1]],
   O: [[1, 1], [1, 1]],
@@ -64,7 +75,7 @@ function resetGame() {
   score = 0;
   gameOver = false;
   scoreEl.textContent = score;
-  messageEl.textContent = 'READY';
+  messageEl.textContent = 'Ready';
   nextPiece = randomPiece();
   spawnPiece();
   clearInterval(loopId);
@@ -72,53 +83,49 @@ function resetGame() {
   draw();
 }
 
-function drawBlock(x, y, color = '#1e2a15') {
-  ctx.fillStyle = color;
-  ctx.fillRect(x * cell, y * cell, cell, cell);
+function drawCell(targetCtx, x, y, color, size = cell) {
+  targetCtx.fillStyle = color;
+  targetCtx.fillRect(x * size, y * size, size, size);
+  targetCtx.strokeStyle = 'rgba(255,255,255,0.08)';
+  targetCtx.strokeRect(x * size + 0.5, y * size + 0.5, size - 1, size - 1);
 }
 
-function drawPiece(piece, offsetX = 0, offsetY = 0, color = '#1e2a15') {
+function drawPiece(targetCtx, piece, offsetX = 0, offsetY = 0, size = cell) {
   piece.shape.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value) drawBlock(offsetX + piece.x + x, offsetY + piece.y + y, color);
+      if (value) drawCell(targetCtx, offsetX + piece.x + x, offsetY + piece.y + y, colors[piece.type], size);
     });
   });
 }
 
 function drawBoard() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   board.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value) drawBlock(x, y);
+      if (value) drawCell(ctx, x, y, value);
     });
   });
-
-  if (!gameOver && current) {
-    drawPiece(current);
-  }
-
-  drawSidebar();
+  if (!gameOver && current) drawPiece(ctx, current);
 }
 
-function drawSidebar() {
-  const sidebarX = boardWidth + 4;
-  ctx.fillStyle = '#1e2a15';
-  ctx.font = '4px Arial';
-  ctx.fillText('NEXT', sidebarX, 8);
-
-  if (nextPiece) {
-    nextPiece.shape.forEach((row, y) => {
-      row.forEach((value, x) => {
-        if (value) {
-          ctx.fillRect(sidebarX + x * cell, 12 + y * cell, cell, cell);
-        }
-      });
+function drawNext() {
+  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  if (!nextPiece) return;
+  const size = 16;
+  const width = nextPiece.shape[0].length * size;
+  const height = nextPiece.shape.length * size;
+  const offsetX = Math.floor((nextCanvas.width - width) / (2 * size));
+  const offsetY = Math.floor((nextCanvas.height - height) / (2 * size));
+  nextPiece.shape.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value) drawCell(nextCtx, offsetX + x, offsetY + y, colors[nextPiece.type], size);
     });
-  }
+  });
+}
 
-  ctx.fillText('PTS', sidebarX, 32);
-  ctx.fillText(String(score), sidebarX, 38);
+function draw() {
+  drawBoard();
+  drawNext();
 }
 
 function rotate(shape) {
@@ -141,11 +148,7 @@ function collides(testX, testY, shape) {
 function mergePiece() {
   current.shape.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value) {
-        const boardY = current.y + y;
-        const boardX = current.x + x;
-        if (boardY >= 0) board[boardY][boardX] = 1;
-      }
+      if (value) board[current.y + y][current.x + x] = colors[current.type];
     });
   });
 }
@@ -159,33 +162,29 @@ function clearLines() {
     }
     return true;
   });
-
-  while (board.length < boardRows) {
-    board.unshift(Array(boardCols).fill(0));
-  }
-
+  while (board.length < boardRows) board.unshift(Array(boardCols).fill(0));
   if (cleared) {
-    score += cleared * 10;
+    score += cleared * 100;
     scoreEl.textContent = score;
-    messageEl.textContent = cleared > 1 ? 'LINES' : 'LINE';
+    messageEl.textContent = cleared > 1 ? `${cleared} lines` : 'Line clear';
   }
 }
 
 function endGame() {
   gameOver = true;
   clearInterval(loopId);
-  messageEl.textContent = 'GAME OVER';
-  drawBoard();
+  messageEl.textContent = 'Game over';
+  draw();
 }
 
 function move(dx, dy) {
-  if (gameOver) return;
+  if (gameOver) return false;
   const nextX = current.x + dx;
   const nextY = current.y + dy;
   if (!collides(nextX, nextY, current.shape)) {
     current.x = nextX;
     current.y = nextY;
-    drawBoard();
+    draw();
     return true;
   }
   return false;
@@ -196,94 +195,49 @@ function rotateCurrent() {
   const rotated = rotate(current.shape);
   if (!collides(current.x, current.y, rotated)) {
     current.shape = rotated;
-    drawBoard();
-    return;
-  }
-  if (!collides(current.x - 1, current.y, rotated)) {
+  } else if (!collides(current.x - 1, current.y, rotated)) {
     current.x -= 1;
     current.shape = rotated;
-    drawBoard();
-    return;
-  }
-  if (!collides(current.x + 1, current.y, rotated)) {
+  } else if (!collides(current.x + 1, current.y, rotated)) {
     current.x += 1;
     current.shape = rotated;
-    drawBoard();
   }
+  draw();
 }
 
 function lockAndContinue() {
   mergePiece();
   clearLines();
   spawnPiece();
-  drawBoard();
+  draw();
+}
+
+function hardDrop() {
+  if (gameOver) return;
+  while (move(0, 1)) {}
+  lockAndContinue();
 }
 
 function tick() {
   if (gameOver) return;
-  const moved = move(0, 1);
-  if (!moved) {
-    lockAndContinue();
-  }
-}
-
-function handleInput(dir) {
-  if (dir === 'left') move(-1, 0);
-  if (dir === 'right') move(1, 0);
-  if (dir === 'down') {
-    if (!move(0, 1)) lockAndContinue();
-  }
-  if (dir === 'up') rotateCurrent();
+  if (!move(0, 1)) lockAndContinue();
 }
 
 window.addEventListener('keydown', event => {
-  const key = event.key.toLowerCase();
-  const moves = {
-    arrowup: 'up',
-    w: 'up',
-    arrowdown: 'down',
-    s: 'down',
-    arrowleft: 'left',
-    a: 'left',
-    arrowright: 'right',
-    d: 'right',
-    ' ': 'up',
-  };
-  const dir = moves[key];
-  if (!dir) return;
-  event.preventDefault();
-  handleInput(dir);
-});
-
-controlButtons.forEach(button => {
-  button.addEventListener('click', () => handleInput(button.dataset.dir));
-});
-
-let touchStartX = 0;
-let touchStartY = 0;
-
-canvas.addEventListener('touchstart', event => {
-  const touch = event.touches[0];
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-}, { passive: true });
-
-canvas.addEventListener('touchend', event => {
-  const touch = event.changedTouches[0];
-  const dx = touch.clientX - touchStartX;
-  const dy = touch.clientY - touchStartY;
-
-  if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
-    rotateCurrent();
-    return;
+  if (gameOver && event.key !== 'Enter') return;
+  const key = event.key;
+  if (key === 'ArrowLeft' || key === 'a' || key === 'A') move(-1, 0);
+  else if (key === 'ArrowRight' || key === 'd' || key === 'D') move(1, 0);
+  else if (key === 'ArrowDown' || key === 's' || key === 'S') {
+    if (!move(0, 1)) lockAndContinue();
+  } else if (key === 'ArrowUp' || key === 'w' || key === 'W') rotateCurrent();
+  else if (key === ' ') {
+    event.preventDefault();
+    hardDrop();
+  } else if (key === 'Enter') {
+    resetGame();
   }
-
-  if (Math.abs(dx) > Math.abs(dy)) {
-    handleInput(dx > 0 ? 'right' : 'left');
-  } else {
-    handleInput(dy > 0 ? 'down' : 'up');
-  }
-}, { passive: true });
+});
 
 restartBtn.addEventListener('click', resetGame);
 resetGame();
