@@ -7,53 +7,100 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="phone-shell">
-    <div class="phone-highlight"></div>
-    <header class="phone-top">
-      <div class="brand">NOKIA</div>
-      <div class="earpiece"></div>
-    </header>
+  <main class="phone-stage">
+    <section class="phone-shell" aria-label="Nokia style phone shell">
+      <svg class="phone-svg" viewBox="0 0 320 640" aria-hidden="true">
+        <defs>
+          <linearGradient id="shellGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#aabccc"/>
+            <stop offset="28%" stop-color="#7d95ab"/>
+            <stop offset="72%" stop-color="#647b90"/>
+            <stop offset="100%" stop-color="#526779"/>
+          </linearGradient>
+          <linearGradient id="keyGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#edf3f8"/>
+            <stop offset="45%" stop-color="#c7d3de"/>
+            <stop offset="100%" stop-color="#91a7b8"/>
+          </linearGradient>
+          <linearGradient id="screenFrame" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#869375"/>
+            <stop offset="100%" stop-color="#667354"/>
+          </linearGradient>
+          <linearGradient id="screenInner" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#b5c394"/>
+            <stop offset="100%" stop-color="#a8b78d"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
 
-    <section class="screen-cradle">
-      <div class="screen-bezel">
-        <div class="screen-meta">
+        <path filter="url(#shadow)" d="M72 18h176c23 0 41 18 41 41v458c0 56-41 105-98 117-20 4-43 6-71 6s-51-2-71-6C-8 622-49 573-49 517V59c0-23 18-41 41-41z" transform="translate(40 0)" fill="url(#shellGrad)" stroke="#4e6377" stroke-width="3"/>
+        <path d="M245 30c8 0 14 4 17 11" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="4" stroke-linecap="round"/>
+        <text x="160" y="52" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="4" fill="#f2f7fc">NOKIA</text>
+        <rect x="119" y="64" rx="5" ry="5" width="82" height="10" fill="#3b4a58"/>
+        <g opacity="0.55">
+          <rect x="124" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="134" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="144" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="154" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="164" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="174" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+          <rect x="184" y="67" rx="2" ry="2" width="6" height="4" fill="#73879b"/>
+        </g>
+
+        <path d="M75 94h170c13 0 24 9 27 22l6 29c2 10-5 19-16 19H58c-11 0-18-9-16-19l6-29c3-13 14-22 27-22z" fill="url(#screenFrame)"/>
+        <rect x="68" y="113" rx="10" ry="10" width="184" height="92" fill="url(#screenInner)" stroke="#6a775b" stroke-width="8"/>
+        <rect x="83" y="129" width="154" height="62" rx="2" ry="2" fill="#a8b78d" stroke="#657252" stroke-width="3"/>
+        <text x="87" y="123" font-size="9" font-weight="700" fill="#1f2c16">SNAKE</text>
+        <text x="198" y="123" font-size="9" font-weight="700" fill="#1f2c16">SCORE</text>
+
+        <g transform="translate(0 0)">
+          <path d="M58 229c22-6 42-11 61-15 11-2 22 5 22 17v17c0 10-8 18-18 18H70c-12 0-20-11-18-23z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+          <path d="M262 229c-22-6-42-11-61-15-11-2-22 5-22 17v17c0 10 8 18 18 18h53c12 0 20-11 18-23z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+          <path d="M112 224h96c12 0 21 9 21 21v16c0 12-9 21-21 21h-96c-12 0-21-9-21-21v-16c0-12 9-21 21-21z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+          <text x="160" y="258" text-anchor="middle" font-size="11" font-weight="700" fill="#223341">START</text>
+        </g>
+
+        <g>
+          <path d="M135 290h50c8 0 14 6 14 14v13c0 8-6 14-14 14h-50c-8 0-14-6-14-14v-13c0-8 6-14 14-14z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+          <path d="M93 332h50c9 0 16 7 16 16v10c0 9-7 16-16 16H93c-9 0-16-7-16-16v-10c0-9 7-16 16-16z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2" transform="skewX(-10)"/>
+          <path d="M177 332h50c9 0 16 7 16 16v10c0 9-7 16-16 16h-50c-9 0-16-7-16-16v-10c0-9 7-16 16-16z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2" transform="skewX(10)"/>
+          <circle cx="160" cy="357" r="30" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+          <path d="M135 384h50c8 0 14 6 14 14v13c0 8-6 14-14 14h-50c-8 0-14-6-14-14v-13c0-8 6-14 14-14z" fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2"/>
+        </g>
+
+        <g fill="url(#keyGrad)" stroke="#4b6172" stroke-width="2">
+          <rect x="58" y="445" rx="16" ry="16" width="60" height="40"/>
+          <rect x="130" y="445" rx="16" ry="16" width="60" height="40"/>
+          <rect x="202" y="445" rx="16" ry="16" width="60" height="40"/>
+          <rect x="58" y="493" rx="16" ry="16" width="60" height="40"/>
+          <rect x="130" y="493" rx="16" ry="16" width="60" height="40"/>
+          <rect x="202" y="493" rx="16" ry="16" width="60" height="40"/>
+          <rect x="58" y="541" rx="16" ry="16" width="60" height="40"/>
+          <rect x="130" y="541" rx="16" ry="16" width="60" height="40"/>
+          <rect x="202" y="541" rx="16" ry="16" width="60" height="40"/>
+          <rect x="58" y="589" rx="16" ry="16" width="60" height="40"/>
+          <rect x="130" y="589" rx="16" ry="16" width="60" height="40"/>
+          <rect x="202" y="589" rx="16" ry="16" width="60" height="40"/>
+        </g>
+      </svg>
+
+      <div class="screen-overlay">
+        <div class="screen-meta-ui">
           <span>SNAKE</span>
           <span>SCORE <strong id="score">0</strong></span>
         </div>
         <canvas id="game" width="84" height="48" aria-label="Snake game board"></canvas>
         <p id="message">READY</p>
       </div>
-    </section>
 
-    <section class="action-row">
-      <button class="soft-side left control" data-dir="left"><span>C</span></button>
-      <button id="restart" class="softkey control-start">START</button>
-      <button class="soft-side right control" data-dir="right"><span>↩</span></button>
-    </section>
-
-    <section class="nav-pad" aria-label="Mobile controls">
-      <button class="nav-button nav-up control" data-dir="up"><span>▲</span></button>
-      <div class="nav-middle">
-        <button class="nav-button nav-left control" data-dir="left"><span>◀</span></button>
-        <button class="nav-button nav-center control" data-dir="down"><span>OK</span></button>
-        <button class="nav-button nav-right control" data-dir="right"><span>▶</span></button>
-      </div>
-      <button class="nav-button nav-down control" data-dir="down"><span>▼</span></button>
-    </section>
-
-    <section class="keypad" aria-hidden="true">
-      <button class="key"><span class="keycap"><b>1</b></span></button>
-      <button class="key"><span class="keycap"><b>2</b><small>ABC</small></span></button>
-      <button class="key"><span class="keycap"><b>3</b><small>DEF</small></span></button>
-      <button class="key"><span class="keycap"><b>4</b><small>GHI</small></span></button>
-      <button class="key"><span class="keycap"><b>5</b><small>JKL</small></span></button>
-      <button class="key"><span class="keycap"><b>6</b><small>MNO</small></span></button>
-      <button class="key"><span class="keycap"><b>7</b><small>PQRS</small></span></button>
-      <button class="key"><span class="keycap"><b>8</b><small>TUV</small></span></button>
-      <button class="key"><span class="keycap"><b>9</b><small>WXYZ</small></span></button>
-      <button class="key"><span class="keycap"><b>*</b></span></button>
-      <button class="key"><span class="keycap"><b>0</b><small>+</small></span></button>
-      <button class="key"><span class="keycap"><b>#</b></span></button>
+      <button id="restart" class="hit hit-start control-start">START</button>
+      <button class="hit hit-up control" data-dir="up" aria-label="Up"></button>
+      <button class="hit hit-left control" data-dir="left" aria-label="Left"></button>
+      <button class="hit hit-right control" data-dir="right" aria-label="Right"></button>
+      <button class="hit hit-down control" data-dir="down" aria-label="Down"></button>
+      <button class="hit hit-center control" data-dir="down" aria-label="OK"></button>
     </section>
   </main>
   <script src="script.js"></script>
