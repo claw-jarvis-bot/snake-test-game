@@ -62,14 +62,14 @@ function draw() {
 
   for (let i = 0; i < tileCount; i++) {
     for (let j = 0; j < tileCount; j++) {
-      drawTile(i, j, (i + j) % 2 === 0 ? '#a9c88f' : '#9cbb83', 0);
+      drawTile(i, j, (i + j) % 2 === 0 ? '#b7c98a' : '#a5ba79', 0);
     }
   }
 
-  drawTile(food.x, food.y, '#b14d21', 1);
+  drawTile(food.x, food.y, '#4a2c16', 1);
 
   snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#2f5128' : '#3f6a33');
+    drawTile(segment.x, segment.y, index === 0 ? '#24361a' : '#365027');
   });
 }
 
