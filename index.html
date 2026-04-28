@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snake Test Game</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Snake</h1>
+    <p class="subtitle">Use arrow keys or WASD to play.</p>
+    <div class="hud">
+      <span>Score: <strong id="score">0</strong></span>
+      <button id="restart">Restart</button>
+    </div>
+    <canvas id="game" width="400" height="400" aria-label="Snake game board"></canvas>
+    <p id="message">Eat the food to grow. Avoid the walls and yourself.</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
