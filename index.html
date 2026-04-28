@@ -8,30 +8,34 @@
 </head>
 <body>
   <main class="phone-shell">
-    <div class="brand">classic</div>
-    <div class="speaker"></div>
+    <div class="top-cap">
+      <div class="speaker"></div>
+    </div>
     <section class="screen-wrap">
       <div class="screen-header">
-        <span>SNAKE ’97</span>
+        <span>SNAKE</span>
         <span><strong id="score">0</strong></span>
       </div>
       <canvas id="game" width="336" height="336" aria-label="Snake game board"></canvas>
       <p id="message">READY</p>
     </section>
-    <button id="restart" class="softkey">START</button>
+    <div class="softkeys">
+      <button id="restart" class="softkey">START</button>
+    </div>
     <div class="controls" aria-label="Mobile controls">
       <button class="control up" data-dir="up">▲</button>
       <div class="controls-row">
         <button class="control" data-dir="left">◀</button>
-        <button class="control center" data-dir="down">●</button>
+        <button class="control center" data-dir="down">OK</button>
         <button class="control" data-dir="right">▶</button>
       </div>
       <button class="control down-wide" data-dir="down">▼</button>
     </div>
     <div class="keypad-grid" aria-hidden="true">
-      <span></span><span></span><span></span>
-      <span></span><span></span><span></span>
-      <span></span><span></span><span></span>
+      <span>1</span><span>2</span><span>3</span>
+      <span>4</span><span>5</span><span>6</span>
+      <span>7</span><span>8</span><span>9</span>
+      <span>*</span><span>0</span><span>#</span>
     </div>
   </main>
   <script src="script.js"></script>

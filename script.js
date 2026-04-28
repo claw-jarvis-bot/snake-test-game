@@ -7,7 +7,7 @@ const controlButtons = document.querySelectorAll('.control');
 
 const gridSize = 16;
 const tileCount = canvas.width / gridSize;
-const speed = 150;
+const speed = 165;
 
 let snake;
 let direction;
@@ -35,6 +35,7 @@ function resetGame() {
     { x: 10, y: 10 },
     { x: 9, y: 10 },
     { x: 8, y: 10 },
+    { x: 7, y: 10 },
   ];
   direction = { x: 1, y: 0 };
   nextDirection = { ...direction };
@@ -62,10 +63,10 @@ function draw() {
     }
   }
 
-  drawTile(food.x, food.y, '#1f2c17', 0);
+  drawTile(food.x, food.y, '#1f2b16', 0);
 
   snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#1f2c17' : '#314127', 0);
+    drawTile(segment.x, segment.y, index === 0 ? '#1f2b16' : '#1f2b16', 0);
   });
 }
 
@@ -103,7 +104,7 @@ function tick() {
     score += 1;
     scoreEl.textContent = score;
     food = randomFoodPosition();
-    messageEl.textContent = 'GOOD';
+    messageEl.textContent = 'SCORE';
   } else {
     snake.pop();
   }
