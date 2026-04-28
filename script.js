@@ -7,7 +7,7 @@ const controlButtons = document.querySelectorAll('.control');
 
 const gridSize = 16;
 const tileCount = canvas.width / gridSize;
-const speed = 135;
+const speed = 150;
 
 let snake;
 let direction;
@@ -42,7 +42,7 @@ function resetGame() {
   score = 0;
   gameOver = false;
   scoreEl.textContent = score;
-  messageEl.textContent = 'Ready';
+  messageEl.textContent = 'READY';
   clearInterval(loopId);
   loopId = setInterval(tick, speed);
   draw();
@@ -50,11 +50,7 @@ function resetGame() {
 
 function drawTile(x, y, color, radius = 2) {
   ctx.fillStyle = color;
-  ctx.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize - 2, gridSize - 2);
-  if (radius > 0) {
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.12)';
-    ctx.strokeRect(x * gridSize + 1.5, y * gridSize + 1.5, gridSize - 3, gridSize - 3);
-  }
+  ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
 }
 
 function draw() {
@@ -62,21 +58,21 @@ function draw() {
 
   for (let i = 0; i < tileCount; i++) {
     for (let j = 0; j < tileCount; j++) {
-      drawTile(i, j, (i + j) % 2 === 0 ? '#b7c79c' : '#a8b98d', 0);
+      drawTile(i, j, (i + j) % 2 === 0 ? '#b8c7a0' : '#b8c7a0', 0);
     }
   }
 
-  drawTile(food.x, food.y, '#23361a', 1);
+  drawTile(food.x, food.y, '#1f2c17', 0);
 
   snake.forEach((segment, index) => {
-    drawTile(segment.x, segment.y, index === 0 ? '#17240f' : '#263a19');
+    drawTile(segment.x, segment.y, index === 0 ? '#1f2c17' : '#314127', 0);
   });
 }
 
 function endGame() {
   gameOver = true;
   clearInterval(loopId);
-  messageEl.textContent = `Game over ${score}`;
+  messageEl.textContent = `GAME OVER ${score}`;
 }
 
 function setDirection(move) {
@@ -107,7 +103,7 @@ function tick() {
     score += 1;
     scoreEl.textContent = score;
     food = randomFoodPosition();
-    messageEl.textContent = 'Good';
+    messageEl.textContent = 'GOOD';
   } else {
     snake.pop();
   }
