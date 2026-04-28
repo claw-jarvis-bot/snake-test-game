@@ -6,13 +6,13 @@
   --shell-dark: #5f7589;
   --shell-edge: #4c6073;
   --screen-bg: #a8b78d;
-  --screen-shadow: #8c9d73;
   --screen-ink: #1f2c16;
   --bezel: #6f7c60;
-  --key-top: #e4ebf1;
-  --key-mid: #b2c2cf;
-  --key-bot: #8fa4b6;
+  --key-top: #e5ecf2;
+  --key-mid: #bac8d4;
+  --key-bot: #93a8ba;
   --key-edge: #4b6172;
+  --key-shadow: #6f8598;
 }
 
 * { box-sizing: border-box; }
@@ -24,6 +24,16 @@ body {
   place-items: center;
   padding: 20px;
   background: radial-gradient(circle at top, #26313c 0%, #121920 56%, #090d11 100%);
+}
+
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
 }
 
 .phone-shell {
@@ -89,9 +99,7 @@ body {
   border: 8px solid var(--bezel);
   border-radius: 10px;
   padding: 6px 6px 8px;
-  box-shadow:
-    inset 0 0 0 2px rgba(255,255,255,0.15),
-    inset 0 -5px 8px rgba(0,0,0,0.08);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15), inset 0 -5px 8px rgba(0,0,0,0.08);
 }
 
 .screen-meta {
@@ -142,22 +150,22 @@ canvas {
   font-weight: 700;
 }
 
-.action-label.right {
-  text-align: right;
-}
+.action-label.right { text-align: right; }
 
 .softkey {
   min-width: 86px;
   height: 26px;
   border: 2px solid var(--key-edge);
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
+  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 42%, var(--key-bot));
   color: #243241;
-  font: inherit;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 rgba(0,0,0,0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 2px rgba(0,0,0,0.08),
+    0 2px 0 rgba(0,0,0,0.14);
 }
 
 .nav-pad {
@@ -178,12 +186,19 @@ canvas {
   height: 30px;
   border: 2px solid var(--key-edge);
   border-radius: 17px;
-  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
+  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 42%, var(--key-bot));
   color: #243241;
-  font: inherit;
   font-size: 11px;
   font-weight: 700;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 0 rgba(0,0,0,0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 2px rgba(0,0,0,0.08),
+    0 2px 0 rgba(0,0,0,0.14);
+}
+
+.nav-button span {
+  display: block;
+  transform: translateY(-1px);
 }
 
 .nav-up,
@@ -205,16 +220,27 @@ canvas {
 }
 
 .key {
-  height: 31px;
+  height: 34px;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.keycap {
+  height: 100%;
+  width: 100%;
   border: 2px solid var(--key-edge);
-  border-radius: 14px;
-  background: linear-gradient(180deg, var(--key-top), var(--key-mid) 45%, var(--key-bot));
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.55), rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, var(--key-top), var(--key-mid) 40%, var(--key-bot));
   color: #223341;
   display: grid;
   place-items: center;
   align-content: center;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.42), 0 2px 0 rgba(0,0,0,0.12);
-  padding: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 2px rgba(0,0,0,0.08),
+    0 2px 0 rgba(0,0,0,0.12);
 }
 
 .key b {
