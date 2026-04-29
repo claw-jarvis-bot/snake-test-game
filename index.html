@@ -18,7 +18,16 @@
       </div>
 
       <div class="game-wrap">
-        <canvas id="game" width="200" height="400" aria-label="Tetris board"></canvas>
+        <div class="board-column">
+          <canvas id="game" width="200" height="400" aria-label="Tetris board"></canvas>
+          <div class="touch-controls" aria-label="Touch controls">
+            <button type="button" class="control-btn" data-action="left" aria-label="Move left">◀</button>
+            <button type="button" class="control-btn" data-action="rotate" aria-label="Rotate piece">⟳</button>
+            <button type="button" class="control-btn" data-action="right" aria-label="Move right">▶</button>
+            <button type="button" class="control-btn soft-drop" data-action="down" aria-label="Soft drop">▼</button>
+            <button type="button" class="control-btn hard-drop" data-action="drop" aria-label="Hard drop">DROP</button>
+          </div>
+        </div>
         <aside class="sidebar">
           <div class="next-box">
             <h2>Next</h2>
@@ -26,10 +35,10 @@
           </div>
           <p id="message">Ready</p>
           <ul class="controls">
-            <li>← → Move</li>
-            <li>↑ Rotate</li>
-            <li>↓ Soft drop</li>
-            <li>Space Hard drop</li>
+            <li>Swipe left/right or tap ◀ ▶ to move</li>
+            <li>Tap ⟳ or swipe up to rotate</li>
+            <li>Tap ▼ or swipe down for soft drop</li>
+            <li>Tap DROP for hard drop</li>
           </ul>
         </aside>
       </div>

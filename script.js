@@ -5,6 +5,7 @@ const nextCtx = nextCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
+const controlButtons = document.querySelectorAll('[data-action]');
 
 ctx.imageSmoothingEnabled = false;
 nextCtx.imageSmoothingEnabled = false;
@@ -223,13 +224,27 @@ function tick() {
   if (!move(0, 1)) lockAndContinue();
 }
 
+function softDrop() {
+  if (!move(0, 1)) lockAndContinue();
+}
+
+function handleAction(action) {
+  if (gameOver && action !== 'restart') return;
+  if (action === 'left') move(-1, 0);
+  else if (action === 'right') move(1, 0);
+  else if (action === 'down') softDrop();
+  else if (action === 'rotate') rotateCurrent();
+  else if (action === 'drop') hardDrop();
+  else if (action === 'restart') resetGame();
+}
+
 window.addEventListener('keydown', event => {
   if (gameOver && event.key !== 'Enter') return;
   const key = event.key;
   if (key === 'ArrowLeft' || key === 'a' || key === 'A') move(-1, 0);
   else if (key === 'ArrowRight' || key === 'd' || key === 'D') move(1, 0);
   else if (key === 'ArrowDown' || key === 's' || key === 'S') {
-    if (!move(0, 1)) lockAndContinue();
+    softDrop();
   } else if (key === 'ArrowUp' || key === 'w' || key === 'W') rotateCurrent();
   else if (key === ' ') {
     event.preventDefault();
@@ -240,4 +255,39 @@ window.addEventListener('keydown', event => {
 });
 
 restartBtn.addEventListener('click', resetGame);
+controlButtons.forEach(button => {
+  const trigger = event => {
+    event.preventDefault();
+    handleAction(button.dataset.action);
+  };
+  button.addEventListener('click', trigger);
+  button.addEventListener('touchstart', trigger, { passive: false });
+});
+
+let touchStartX = 0;
+let touchStartY = 0;
+const swipeThreshold = 24;
+
+canvas.addEventListener('touchstart', event => {
+  const touch = event.changedTouches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+}, { passive: true });
+
+canvas.addEventListener('touchend', event => {
+  event.preventDefault();
+  const touch = event.changedTouches[0];
+  const dx = touch.clientX - touchStartX;
+  const dy = touch.clientY - touchStartY;
+  if (Math.abs(dx) < swipeThreshold && Math.abs(dy) < swipeThreshold) {
+    rotateCurrent();
+    return;
+  }
+  if (Math.abs(dx) > Math.abs(dy)) {
+    handleAction(dx > 0 ? 'right' : 'left');
+  } else {
+    handleAction(dy > 0 ? 'down' : 'rotate');
+  }
+}, { passive: false });
+
 resetGame();
