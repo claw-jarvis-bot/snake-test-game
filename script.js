@@ -1,293 +1,453 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const nextCanvas = document.getElementById('next');
-const nextCtx = nextCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
+const livesEl = document.getElementById('lives');
 const messageEl = document.getElementById('message');
 const restartBtn = document.getElementById('restart');
 const controlButtons = document.querySelectorAll('[data-action]');
 
 ctx.imageSmoothingEnabled = false;
-nextCtx.imageSmoothingEnabled = false;
 
-const cell = 20;
-const boardCols = 10;
-const boardRows = 20;
-const dropInterval = 550;
-const colors = {
-  I: '#38bdf8',
-  O: '#facc15',
-  T: '#c084fc',
-  L: '#fb923c',
-  J: '#60a5fa',
-  S: '#4ade80',
-  Z: '#f87171',
-};
-const pieces = {
-  I: [[1, 1, 1, 1]],
-  O: [[1, 1], [1, 1]],
-  T: [[0, 1, 0], [1, 1, 1]],
-  L: [[1, 0], [1, 0], [1, 1]],
-  J: [[0, 1], [0, 1], [1, 1]],
-  S: [[0, 1, 1], [1, 1, 0]],
-  Z: [[1, 1, 0], [0, 1, 1]],
+const gravity = 0.65;
+const moveSpeed = 4.2;
+const jumpPower = 13.5;
+const groundY = 460;
+const worldWidth = 2400;
+
+const keys = {
+  left: false,
+  right: false,
 };
 
-let board;
-let current;
-let nextPiece;
-let score;
-let gameOver;
-let loopId;
+let animationId = null;
+let score = 0;
+let lives = 3;
+let cameraX = 0;
+let gameState = 'running';
 
-function randomPiece() {
-  const types = Object.keys(pieces);
-  const type = types[Math.floor(Math.random() * types.length)];
-  return {
-    type,
-    shape: pieces[type].map(row => [...row]),
-    x: 0,
-    y: 0,
-  };
+const player = {
+  x: 110,
+  y: 0,
+  width: 34,
+  height: 48,
+  vx: 0,
+  vy: 0,
+  onGround: false,
+  facing: 1,
+  invulnerable: 0,
+};
+
+const level = {
+  platforms: [
+    { x: 0, y: 500, width: worldWidth, height: 80, type: 'ground' },
+    { x: 260, y: 410, width: 130, height: 18, type: 'brick' },
+    { x: 470, y: 350, width: 110, height: 18, type: 'brick' },
+    { x: 660, y: 295, width: 120, height: 18, type: 'brick' },
+    { x: 950, y: 390, width: 170, height: 18, type: 'brick' },
+    { x: 1220, y: 340, width: 140, height: 18, type: 'brick' },
+    { x: 1460, y: 280, width: 150, height: 18, type: 'brick' },
+    { x: 1710, y: 350, width: 200, height: 18, type: 'brick' },
+  ],
+  coins: [
+    { x: 310, y: 365, r: 10, taken: false },
+    { x: 520, y: 305, r: 10, taken: false },
+    { x: 720, y: 250, r: 10, taken: false },
+    { x: 1010, y: 345, r: 10, taken: false },
+    { x: 1080, y: 345, r: 10, taken: false },
+    { x: 1285, y: 295, r: 10, taken: false },
+    { x: 1540, y: 235, r: 10, taken: false },
+    { x: 1780, y: 305, r: 10, taken: false },
+    { x: 1860, y: 305, r: 10, taken: false },
+  ],
+  enemies: [
+    { x: 760, y: 468, width: 34, height: 28, minX: 690, maxX: 890, vx: -1.1, alive: true },
+    { x: 1340, y: 308, width: 34, height: 28, minX: 1240, maxX: 1490, vx: 1.2, alive: true },
+    { x: 1960, y: 468, width: 34, height: 28, minX: 1900, maxX: 2120, vx: -1.35, alive: true },
+  ],
+  flag: { x: 2250, y: 180, width: 18, height: 320 },
+};
+
+function resetLevel() {
+  score = 0;
+  lives = 3;
+  gameState = 'running';
+  cameraX = 0;
+  player.x = 110;
+  player.y = 340;
+  player.vx = 0;
+  player.vy = 0;
+  player.onGround = false;
+  player.invulnerable = 0;
+  level.coins.forEach(coin => { coin.taken = false; });
+  level.enemies.forEach((enemy, index) => {
+    enemy.alive = true;
+    if (index === 0) enemy.x = 760;
+    if (index === 1) enemy.x = 1340;
+    if (index === 2) enemy.x = 1960;
+    enemy.vx = Math.sign(enemy.vx || 1) * (index === 2 ? -1.35 : index === 1 ? 1.2 : -1.1);
+  });
+  updateHud();
+  setMessage('Spring till flaggan och samla mynt.');
 }
 
-function createBoard() {
-  return Array.from({ length: boardRows }, () => Array(boardCols).fill(0));
+function updateHud() {
+  scoreEl.textContent = score;
+  livesEl.textContent = lives;
 }
 
-function cloneShape(shape) {
-  return shape.map(row => [...row]);
+function setMessage(text) {
+  messageEl.textContent = text;
 }
 
-function spawnPiece() {
-  current = nextPiece || randomPiece();
-  current.shape = cloneShape(current.shape);
-  current.x = Math.floor((boardCols - current.shape[0].length) / 2);
-  current.y = 0;
-  nextPiece = randomPiece();
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
 
-  if (collides(current.x, current.y, current.shape)) {
-    endGame();
+function intersects(a, b) {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+function jump() {
+  if (gameState !== 'running' || !player.onGround) return;
+  player.vy = -jumpPower;
+  player.onGround = false;
+}
+
+function applyInput() {
+  player.vx = 0;
+  if (keys.left) {
+    player.vx = -moveSpeed;
+    player.facing = -1;
+  }
+  if (keys.right) {
+    player.vx = moveSpeed;
+    player.facing = 1;
   }
 }
 
-function resetGame() {
-  board = createBoard();
-  score = 0;
-  gameOver = false;
-  scoreEl.textContent = score;
-  messageEl.textContent = 'Ready';
-  nextPiece = randomPiece();
-  spawnPiece();
-  clearInterval(loopId);
-  loopId = setInterval(tick, dropInterval);
-  draw();
+function collidePlatform(platform, prevX, prevY) {
+  const next = { x: player.x, y: player.y, width: player.width, height: player.height };
+  if (!intersects(next, platform)) return;
+
+  const prevBottom = prevY + player.height;
+  const prevTop = prevY;
+  const prevRight = prevX + player.width;
+  const prevLeft = prevX;
+
+  if (prevBottom <= platform.y && player.vy >= 0) {
+    player.y = platform.y - player.height;
+    player.vy = 0;
+    player.onGround = true;
+    return;
+  }
+
+  if (prevTop >= platform.y + platform.height && player.vy < 0) {
+    player.y = platform.y + platform.height;
+    player.vy = 0;
+    return;
+  }
+
+  if (prevRight <= platform.x && player.vx > 0) {
+    player.x = platform.x - player.width;
+    player.vx = 0;
+    return;
+  }
+
+  if (prevLeft >= platform.x + platform.width && player.vx < 0) {
+    player.x = platform.x + platform.width;
+    player.vx = 0;
+  }
 }
 
-function drawCell(targetCtx, x, y, color, size = cell) {
-  targetCtx.fillStyle = color;
-  targetCtx.fillRect(x * size, y * size, size, size);
-  targetCtx.strokeStyle = 'rgba(255,255,255,0.08)';
-  targetCtx.strokeRect(x * size + 0.5, y * size + 0.5, size - 1, size - 1);
+function updatePlayer() {
+  applyInput();
+  const prevX = player.x;
+  const prevY = player.y;
+
+  player.x += player.vx;
+  player.x = clamp(player.x, 0, worldWidth - player.width);
+  player.vy += gravity;
+  player.vy = Math.min(player.vy, 16);
+  player.y += player.vy;
+  player.onGround = false;
+
+  for (const platform of level.platforms) {
+    collidePlatform(platform, prevX, prevY);
+  }
+
+  if (player.y + player.height >= groundY + 40) {
+    loseLife();
+  }
+
+  cameraX = clamp(player.x - canvas.width * 0.35, 0, worldWidth - canvas.width);
+  if (player.invulnerable > 0) player.invulnerable -= 1;
 }
 
-function drawPiece(targetCtx, piece, offsetX = 0, offsetY = 0, size = cell) {
-  piece.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value) drawCell(targetCtx, offsetX + piece.x + x, offsetY + piece.y + y, colors[piece.type], size);
-    });
+function collectCoins() {
+  level.coins.forEach(coin => {
+    if (coin.taken) return;
+    const dx = player.x + player.width / 2 - coin.x;
+    const dy = player.y + player.height / 2 - coin.y;
+    if (Math.hypot(dx, dy) < 26) {
+      coin.taken = true;
+      score += 1;
+      updateHud();
+      setMessage(score === level.coins.length ? 'Alla mynt tagna — mot flaggan!' : 'Pling!');
+    }
   });
 }
 
-function drawBoard() {
+function updateEnemies() {
+  level.enemies.forEach(enemy => {
+    if (!enemy.alive) return;
+    enemy.x += enemy.vx;
+    if (enemy.x <= enemy.minX || enemy.x + enemy.width >= enemy.maxX) {
+      enemy.vx *= -1;
+    }
+
+    const touching = intersects(player, enemy);
+    if (!touching || gameState !== 'running') return;
+
+    const playerBottom = player.y + player.height;
+    if (player.vy > 0 && playerBottom - enemy.y < 22) {
+      enemy.alive = false;
+      player.vy = -9;
+      score += 2;
+      updateHud();
+      setMessage('Snyggt hopp.');
+    } else if (player.invulnerable === 0) {
+      loseLife();
+    }
+  });
+}
+
+function checkWin() {
+  const flagZone = { x: level.flag.x - 18, y: level.flag.y, width: 54, height: level.flag.height };
+  if (gameState === 'running' && intersects(player, flagZone)) {
+    gameState = 'won';
+    setMessage('Bana klar! 🎉');
+    cancelAnimationFrame(animationId);
+  }
+}
+
+function loseLife() {
+  lives -= 1;
+  updateHud();
+  if (lives <= 0) {
+    gameState = 'lost';
+    setMessage('Game over. Starta om och kör igen.');
+    cancelAnimationFrame(animationId);
+    return;
+  }
+
+  player.x = Math.max(80, player.x - 120);
+  player.y = 240;
+  player.vx = 0;
+  player.vy = 0;
+  player.invulnerable = 90;
+  setMessage('Aj. Försök igen.');
+}
+
+function drawBackground() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  board.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value) drawCell(ctx, x, y, value);
-    });
-  });
-  if (!gameOver && current) drawPiece(ctx, current);
+
+  const hillOffset = cameraX * 0.25;
+  ctx.fillStyle = '#dff7ff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawCloud(140 - hillOffset * 0.15, 90, 1);
+  drawCloud(420 - hillOffset * 0.12, 140, 1.2);
+  drawCloud(760 - hillOffset * 0.2, 85, 0.95);
+
+  ctx.fillStyle = '#7cc66b';
+  for (let i = -1; i < 6; i += 1) {
+    const x = i * 280 - (hillOffset % 280);
+    drawHill(x, 465, 190, 120);
+  }
 }
 
-function drawNext() {
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-  if (!nextPiece) return;
-  const size = 16;
-  const width = nextPiece.shape[0].length * size;
-  const height = nextPiece.shape.length * size;
-  const offsetX = Math.floor((nextCanvas.width - width) / (2 * size));
-  const offsetY = Math.floor((nextCanvas.height - height) / (2 * size));
-  nextPiece.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value) drawCell(nextCtx, offsetX + x, offsetY + y, colors[nextPiece.type], size);
-    });
+function drawHill(x, y, width, height) {
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.quadraticCurveTo(x + width / 2, y - height, x + width, y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawCloud(x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  [[0, 0, 26], [26, -14, 24], [54, -4, 22], [18, 12, 22], [46, 14, 18]].forEach(([cx, cy, r]) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
   });
+  ctx.restore();
+}
+
+function drawPlatforms() {
+  level.platforms.forEach(platform => {
+    const x = platform.x - cameraX;
+    if (x + platform.width < 0 || x > canvas.width) return;
+    if (platform.type === 'ground') {
+      ctx.fillStyle = '#7c4a1f';
+      ctx.fillRect(x, platform.y, platform.width, platform.height);
+      ctx.fillStyle = '#2db44f';
+      ctx.fillRect(x, platform.y, platform.width, 18);
+      return;
+    }
+    ctx.fillStyle = '#b96a30';
+    ctx.fillRect(x, platform.y, platform.width, platform.height);
+    ctx.strokeStyle = '#80431e';
+    ctx.lineWidth = 3;
+    for (let brickX = 0; brickX < platform.width; brickX += 32) {
+      ctx.strokeRect(x + brickX, platform.y, 32, platform.height);
+    }
+  });
+}
+
+function drawCoins() {
+  level.coins.forEach(coin => {
+    if (coin.taken) return;
+    const x = coin.x - cameraX;
+    if (x < -20 || x > canvas.width + 20) return;
+    ctx.fillStyle = '#ffd43b';
+    ctx.beginPath();
+    ctx.arc(x, coin.y, coin.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillRect(x - 2, coin.y - 8, 4, 16);
+  });
+}
+
+function drawEnemies() {
+  level.enemies.forEach(enemy => {
+    if (!enemy.alive) return;
+    const x = enemy.x - cameraX;
+    if (x + enemy.width < 0 || x > canvas.width) return;
+    ctx.fillStyle = '#7a3e16';
+    ctx.fillRect(x, enemy.y, enemy.width, enemy.height);
+    ctx.fillStyle = '#f5d3a4';
+    ctx.fillRect(x + 4, enemy.y + 16, enemy.width - 8, 10);
+    ctx.fillStyle = '#111827';
+    ctx.fillRect(x + 7, enemy.y + 8, 4, 4);
+    ctx.fillRect(x + 23, enemy.y + 8, 4, 4);
+  });
+}
+
+function drawFlag() {
+  const x = level.flag.x - cameraX;
+  ctx.fillStyle = '#f3f4f6';
+  ctx.fillRect(x, level.flag.y, level.flag.width, level.flag.height);
+  ctx.fillStyle = '#22c55e';
+  ctx.beginPath();
+  ctx.moveTo(x + level.flag.width, level.flag.y + 12);
+  ctx.lineTo(x + 80, level.flag.y + 34);
+  ctx.lineTo(x + level.flag.width, level.flag.y + 56);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawPlayer() {
+  const x = player.x - cameraX;
+  if (player.invulnerable > 0 && Math.floor(player.invulnerable / 6) % 2 === 0) return;
+
+  ctx.fillStyle = '#ef4444';
+  ctx.fillRect(x + 8, player.y, 18, 12);
+  ctx.fillRect(x + 3, player.y + 10, 28, 10);
+  ctx.fillStyle = '#f3d4b2';
+  ctx.fillRect(x + 7, player.y + 16, 20, 16);
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(x + 5, player.y + 30, 24, 12);
+  ctx.fillRect(x + 8, player.y + 42, 7, 6);
+  ctx.fillRect(x + 19, player.y + 42, 7, 6);
+  ctx.fillStyle = '#111827';
+  const eyeX = player.facing === 1 ? x + 20 : x + 12;
+  ctx.fillRect(eyeX, player.y + 20, 3, 4);
+}
+
+function drawOverlay() {
+  if (gameState === 'running') return;
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 54px Inter, sans-serif';
+  ctx.fillText(gameState === 'won' ? 'Bana klar!' : 'Game over', canvas.width / 2, canvas.height / 2 - 10);
+  ctx.font = '24px Inter, sans-serif';
+  ctx.fillText('Tryck på Starta om för att spela igen', canvas.width / 2, canvas.height / 2 + 36);
 }
 
 function draw() {
-  drawBoard();
-  drawNext();
+  drawBackground();
+  drawPlatforms();
+  drawCoins();
+  drawEnemies();
+  drawFlag();
+  drawPlayer();
+  drawOverlay();
 }
 
-function rotate(shape) {
-  return shape[0].map((_, x) => shape.map(row => row[x]).reverse());
-}
-
-function collides(testX, testY, shape) {
-  for (let y = 0; y < shape.length; y++) {
-    for (let x = 0; x < shape[y].length; x++) {
-      if (!shape[y][x]) continue;
-      const boardX = testX + x;
-      const boardY = testY + y;
-      if (boardX < 0 || boardX >= boardCols || boardY >= boardRows) return true;
-      if (boardY >= 0 && board[boardY][boardX]) return true;
-    }
-  }
-  return false;
-}
-
-function mergePiece() {
-  current.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value) board[current.y + y][current.x + x] = colors[current.type];
-    });
-  });
-}
-
-function clearLines() {
-  let cleared = 0;
-  board = board.filter(row => {
-    if (row.every(Boolean)) {
-      cleared += 1;
-      return false;
-    }
-    return true;
-  });
-  while (board.length < boardRows) board.unshift(Array(boardCols).fill(0));
-  if (cleared) {
-    score += cleared * 100;
-    scoreEl.textContent = score;
-    messageEl.textContent = cleared > 1 ? `${cleared} lines` : 'Line clear';
-  }
-}
-
-function endGame() {
-  gameOver = true;
-  clearInterval(loopId);
-  messageEl.textContent = 'Game over';
-  draw();
-}
-
-function move(dx, dy) {
-  if (gameOver) return false;
-  const nextX = current.x + dx;
-  const nextY = current.y + dy;
-  if (!collides(nextX, nextY, current.shape)) {
-    current.x = nextX;
-    current.y = nextY;
+function update() {
+  if (gameState !== 'running') {
     draw();
-    return true;
+    return;
   }
-  return false;
-}
-
-function rotateCurrent() {
-  if (gameOver) return;
-  const rotated = rotate(current.shape);
-  if (!collides(current.x, current.y, rotated)) {
-    current.shape = rotated;
-  } else if (!collides(current.x - 1, current.y, rotated)) {
-    current.x -= 1;
-    current.shape = rotated;
-  } else if (!collides(current.x + 1, current.y, rotated)) {
-    current.x += 1;
-    current.shape = rotated;
-  }
+  updatePlayer();
+  collectCoins();
+  updateEnemies();
+  checkWin();
   draw();
+  animationId = requestAnimationFrame(update);
 }
 
-function lockAndContinue() {
-  mergePiece();
-  clearLines();
-  spawnPiece();
+function restartGame() {
+  cancelAnimationFrame(animationId);
+  resetLevel();
   draw();
-}
-
-function hardDrop() {
-  if (gameOver) return;
-  while (move(0, 1)) {}
-  lockAndContinue();
-}
-
-function tick() {
-  if (gameOver) return;
-  if (!move(0, 1)) lockAndContinue();
-}
-
-function softDrop() {
-  if (!move(0, 1)) lockAndContinue();
-}
-
-function handleAction(action) {
-  if (gameOver && action !== 'restart') return;
-  if (action === 'left') move(-1, 0);
-  else if (action === 'right') move(1, 0);
-  else if (action === 'down') softDrop();
-  else if (action === 'rotate') rotateCurrent();
-  else if (action === 'drop') hardDrop();
-  else if (action === 'restart') resetGame();
+  animationId = requestAnimationFrame(update);
 }
 
 window.addEventListener('keydown', event => {
-  if (gameOver && event.key !== 'Enter') return;
-  const key = event.key;
-  if (key === 'ArrowLeft' || key === 'a' || key === 'A') move(-1, 0);
-  else if (key === 'ArrowRight' || key === 'd' || key === 'D') move(1, 0);
-  else if (key === 'ArrowDown' || key === 's' || key === 'S') {
-    softDrop();
-  } else if (key === 'ArrowUp' || key === 'w' || key === 'W') rotateCurrent();
-  else if (key === ' ') {
+  const key = event.key.toLowerCase();
+  if (key === 'arrowleft' || key === 'a') keys.left = true;
+  if (key === 'arrowright' || key === 'd') keys.right = true;
+  if (key === 'arrowup' || key === 'w' || key === ' ') {
     event.preventDefault();
-    hardDrop();
-  } else if (key === 'Enter') {
-    resetGame();
+    jump();
   }
 });
 
-restartBtn.addEventListener('click', resetGame);
+window.addEventListener('keyup', event => {
+  const key = event.key.toLowerCase();
+  if (key === 'arrowleft' || key === 'a') keys.left = false;
+  if (key === 'arrowright' || key === 'd') keys.right = false;
+});
+
+restartBtn.addEventListener('click', restartGame);
 controlButtons.forEach(button => {
-  const trigger = event => {
+  const action = button.dataset.action;
+  const press = event => {
     event.preventDefault();
-    handleAction(button.dataset.action);
+    if (action === 'left') keys.left = true;
+    if (action === 'right') keys.right = true;
+    if (action === 'jump') jump();
   };
-  button.addEventListener('click', trigger);
-  button.addEventListener('touchstart', trigger, { passive: false });
+  const release = event => {
+    event.preventDefault();
+    if (action === 'left') keys.left = false;
+    if (action === 'right') keys.right = false;
+  };
+  button.addEventListener('mousedown', press);
+  button.addEventListener('mouseup', release);
+  button.addEventListener('mouseleave', release);
+  button.addEventListener('touchstart', press, { passive: false });
+  button.addEventListener('touchend', release, { passive: false });
 });
 
-let touchStartX = 0;
-let touchStartY = 0;
-const swipeThreshold = 24;
-
-canvas.addEventListener('touchstart', event => {
-  const touch = event.changedTouches[0];
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-}, { passive: true });
-
-canvas.addEventListener('touchend', event => {
-  event.preventDefault();
-  const touch = event.changedTouches[0];
-  const dx = touch.clientX - touchStartX;
-  const dy = touch.clientY - touchStartY;
-  if (Math.abs(dx) < swipeThreshold && Math.abs(dy) < swipeThreshold) {
-    rotateCurrent();
-    return;
-  }
-  if (Math.abs(dx) > Math.abs(dy)) {
-    handleAction(dx > 0 ? 'right' : 'left');
-  } else {
-    handleAction(dy > 0 ? 'down' : 'rotate');
-  }
-}, { passive: false });
-
-resetGame();
+restartGame();

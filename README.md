@@ -1,12 +1,17 @@
-# Snake Test Game
+# Mini Mario
 
-A tiny browser-based snake game.
+Ett litet browserspel i Mario-stil.
 
-## Run
+## Kör
 
-Open `index.html` in a browser.
+Öppna `index.html` i en webbläsare.
 
-## Controls
+## Kontroller
 
-- Arrow keys
-- WASD
+- `←` / `A` = vänster
+- `→` / `D` = höger
+- `↑` / `W` / `Space` = hoppa
+
+## Mål
+
+Samla mynt, hoppa på fiender och nå flaggan.

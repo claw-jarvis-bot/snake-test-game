@@ -1,46 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tetris</title>
+  <title>Mini Mario</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app">
     <section class="game-panel">
       <div class="hud">
-        <h1>Tetris</h1>
+        <div>
+          <p class="eyebrow">Mini platformer</p>
+          <h1>Mini Mario</h1>
+        </div>
         <div class="stats">
-          <span>Score: <strong id="score">0</strong></span>
-          <button id="restart">Restart</button>
+          <span>Mynt: <strong id="score">0</strong></span>
+          <span>Liv: <strong id="lives">3</strong></span>
+          <button id="restart" type="button">Starta om</button>
         </div>
       </div>
 
       <div class="game-wrap">
-        <div class="board-column">
-          <canvas id="game" width="200" height="400" aria-label="Tetris board"></canvas>
-          <div class="touch-controls" aria-label="Touch controls">
-            <button type="button" class="control-btn" data-action="left" aria-label="Move left">◀</button>
-            <button type="button" class="control-btn" data-action="rotate" aria-label="Rotate piece">⟳</button>
-            <button type="button" class="control-btn" data-action="right" aria-label="Move right">▶</button>
-            <button type="button" class="control-btn soft-drop" data-action="down" aria-label="Soft drop">▼</button>
-            <button type="button" class="control-btn hard-drop" data-action="drop" aria-label="Hard drop">DROP</button>
-          </div>
-        </div>
+        <canvas id="game" width="960" height="540" aria-label="Mini Mario spel"></canvas>
         <aside class="sidebar">
-          <div class="next-box">
-            <h2>Next</h2>
-            <canvas id="next" width="80" height="80" aria-label="Next piece"></canvas>
-          </div>
-          <p id="message">Ready</p>
+          <p id="message">Spring till flaggan och samla mynt.</p>
           <ul class="controls">
-            <li>Swipe left/right or tap ◀ ▶ to move</li>
-            <li>Tap ⟳ or swipe up to rotate</li>
-            <li>Tap ▼ or swipe down for soft drop</li>
-            <li>Tap DROP for hard drop</li>
+            <li>Piltangenter eller A/D för att röra dig</li>
+            <li>W, pil upp eller space för att hoppa</li>
+            <li>Hoppa på fiender för att besegra dem</li>
           </ul>
         </aside>
+      </div>
+
+      <div class="touch-controls" aria-label="Touch controls">
+        <button type="button" class="control-btn" data-action="left">◀</button>
+        <button type="button" class="control-btn" data-action="jump">⤒</button>
+        <button type="button" class="control-btn" data-action="right">▶</button>
       </div>
     </section>
   </main>
