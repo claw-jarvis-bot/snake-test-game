@@ -1,6 +1,6 @@
-# Mini Mario
+# Star Wars: Trench Run Lite
 
-Ett litet browserspel i Mario-stil.
+Ett litet Star Wars-inspirerat browser-spel där du flyger genom en skyttegrav, skjuter TIE-jägare och försöker sätta sista protonskottet i målet.
 
 ## Kör
 
@@ -8,10 +8,10 @@ Ett litet browserspel i Mario-stil.
 
 ## Kontroller
 
-- `←` / `A` = vänster
-- `→` / `D` = höger
-- `↑` / `W` / `Space` = hoppa
+- `WASD` eller piltangenter = styr skeppet
+- `Space` = skjut
+- Touchknappar finns på mobil
 
 ## Mål
 
-Samla mynt, hoppa på fiender och nå flaggan.
+Överlev, samla energiceller, nå 100% framsteg och skjut sista skottet för att vinna.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mini Mario</title>
+  <title>Star Wars: Trench Run Lite</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,31 +11,36 @@
     <section class="game-panel">
       <div class="hud">
         <div>
-          <p class="eyebrow">Mini platformer</p>
-          <h1>Mini Mario</h1>
+          <p class="eyebrow">Arcade mission</p>
+          <h1>Star Wars: Trench Run Lite</h1>
         </div>
         <div class="stats">
-          <span>Mynt: <strong id="score">0</strong></span>
-          <span>Liv: <strong id="lives">3</strong></span>
+          <span>Poäng: <strong id="score">0</strong></span>
+          <span>Sköld: <strong id="shield">3</strong></span>
+          <span>Framsteg: <strong id="progress">0%</strong></span>
           <button id="restart" type="button">Starta om</button>
         </div>
       </div>
 
       <div class="game-wrap">
-        <canvas id="game" width="960" height="540" aria-label="Mini Mario spel"></canvas>
+        <canvas id="game" width="960" height="540" aria-label="Star Wars trench run spel"></canvas>
         <aside class="sidebar">
-          <p id="message">Spring till flaggan och samla mynt.</p>
+          <p id="message">Flyg genom skyttegraven, skjut TIE-jägare och nå protonmålet.</p>
           <ul class="controls">
-            <li>Piltangenter eller A/D för att röra dig</li>
-            <li>W, pil upp eller space för att hoppa</li>
-            <li>Hoppa på fiender för att besegra dem</li>
+            <li>WASD eller piltangenter för att styra</li>
+            <li>Space för att skjuta</li>
+            <li>Samla energiceller för bonuspoäng</li>
+            <li>När du når 100%: avfyra sista skottet i målet</li>
           </ul>
         </aside>
       </div>
 
       <div class="touch-controls" aria-label="Touch controls">
+        <button type="button" class="control-btn" data-action="up">▲</button>
+        <button type="button" class="control-btn" data-action="shoot">✦</button>
+        <button type="button" class="control-btn" data-action="down">▼</button>
         <button type="button" class="control-btn" data-action="left">◀</button>
-        <button type="button" class="control-btn" data-action="jump">⤒</button>
+        <button type="button" class="control-btn" data-action="restart">↺</button>
         <button type="button" class="control-btn" data-action="right">▶</button>
       </div>
     </section>
